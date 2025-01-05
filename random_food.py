@@ -3,6 +3,7 @@ import random
 import json
 import os
 from flask import Flask
+import threading
 
 # อ่านข้อมูลจากไฟล์ JSON
 with open("food_list.json", "r", encoding="utf-8") as f:
@@ -42,13 +43,15 @@ async def on_message(message):
         )
         await message.channel.send(help_text)
 
-# เริ่มต้น Flask app
-@app.before_first_request
-def before_first_request():
-    # เริ่มต้น Discord bot หลังจาก Flask app เริ่ม
+# ฟังก์ชันสำหรับเริ่ม Discord bot ใน thread แยก
+def run_discord_bot():
     client.run(os.getenv('TOKEN'))
 
 if __name__ == '__main__':
+    # สร้าง thread เพื่อให้ Discord bot รันในขณะที่ Flask app ฟัง HTTP requests
+    discord_thread = threading.Thread(target=run_discord_bot)
+    discord_thread.start()
+
     # ฟังพอร์ตที่ Render กำหนด
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
