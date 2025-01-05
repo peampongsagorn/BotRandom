@@ -2,12 +2,20 @@ import discord
 import random
 import json
 import os
+from flask import Flask
 
-
+# อ่านข้อมูลจากไฟล์ JSON
 with open("food_list.json", "r", encoding="utf-8") as f:
     food_data = json.load(f)
 
+# สร้าง Flask app สำหรับการฟัง HTTP requests
+app = Flask(__name__)
 
+@app.route('/')
+def index():
+    return "Discord bot is running"
+
+# ตั้งค่า Discord client
 intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
@@ -20,7 +28,6 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-
     if message.author == client.user:
         return
 
@@ -35,4 +42,13 @@ async def on_message(message):
         )
         await message.channel.send(help_text)
 
-client.run(os.getenv('TOKEN'))
+# เริ่มต้น Flask app
+@app.before_first_request
+def before_first_request():
+    # เริ่มต้น Discord bot หลังจาก Flask app เริ่ม
+    client.run(os.getenv('TOKEN'))
+
+if __name__ == '__main__':
+    # ฟังพอร์ตที่ Render กำหนด
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
