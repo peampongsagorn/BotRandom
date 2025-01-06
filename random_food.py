@@ -63,7 +63,7 @@ async def on_message(message):
             await message.channel.send(f"ไปหาซื้อ '{random_food}' ซะ แล้วก็ไม่ต้องสุ่มใหม่ล่ะ อย่าให้มีครั้งที่ 3 เด็ดขาด")
         elif message_count == 3:
             await message.channel.send(f"ไปหาซื้อ '{random_food}' ซะ ครั้งที่ 4 นี่ไม่ควร")
-        elif message_count == 3:
+        elif message_count == 4:
             await message.channel.send(f"ถ้ามีในใจแล้วก็ไม่ต้องสุ่มจ้าา จะล่าแบ้")
         else:
             await message.channel.send(f"ไปหาซื้อ '{random_food}' ซะ แล้วก็ไม่ต้องสุ่มใหม่ล่ะ เหนื่อยจะสุ่มมม")
